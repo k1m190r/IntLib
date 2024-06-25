@@ -1,0 +1,8 @@
+ipykernel
+numpy
+matplotlib
+pandas
+simpy
+scipy
+bokeh
+numba
