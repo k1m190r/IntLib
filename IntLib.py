@@ -535,7 +535,7 @@ class Interval:
         return _mid(*self)
 
     def __eq__(self, other):
-        [_s, s_], [_o, o_] = self, _ensure_interval(other)
+        [_s, s_], [_o, o_] = self, _ensure_IA(other)
         return (_s == _o) and (s_ == o_)
 
     def __neq__(self, other):
@@ -543,7 +543,7 @@ class Interval:
 
     def __contains__(self, other):
         """_o_ ⊆ _s_ ≡ _s ≤ _o ∧ o_ ≤ s_"""
-        [_s, s_], o = self, _ensure_interval(other)
+        [_s, s_], o = self, _ensure_IA(other)
         if o.isempty:
             return True
         [_o, o_] = o
@@ -552,7 +552,7 @@ class Interval:
 
     def is_inclusion(self, other):
         """_o_ ⊂ _s_ ≡ _s < _o ∧ o_ < s_"""
-        [_s, s_], o = self, _ensure_interval(other)
+        [_s, s_], o = self, _ensure_IA(other)
         if o.isempty:
             return True
         [_o, o_] = o
@@ -560,77 +560,77 @@ class Interval:
 
     def __and__(self, other):
         """_s_ ∩ _o_"""
-        I, s, o = Interval, self, _ensure_interval(other)
+        IA, s, o = Interval, self, _ensure_IA(other)
         [_s, s_], [_o, o_] = s, o
         return (
-            I()
+            IA()
             if ((s_ < _o) or (o_ < _s) or (s.isempty or o.isempty))
-            else I(max(_s, _o), min(s_, o_))
+            else IA(max(_s, _o), min(s_, o_))
         )
 
     def __or__(self, other):
         """Hull: _s_ ⊔ _o_"""
-        I, s, o = Interval, self, _ensure_interval(other)
+        IA, s, o = Interval, self, _ensure_IA(other)
         [_s, s_], [_o, o_] = s, o
         return (
-            I(min(_s, _o), max(s_, o_))
+            IA(min(_s, _o), max(s_, o_))
             if not (s.isempty or o.isempty)
             else (o if s.isempty else s)
         )
 
     def dist(self, other):
         """Distance between _s_ and _o_."""
-        [_s, s_], [_o, o_] = self, _ensure_interval(other)
+        [_s, s_], [_o, o_] = self, _ensure_IA(other)
         return _dist(_s, s_, _o, o_)
 
     def __neg__(self):
         """-[_x, x_]"""
-        I, [_x, x_] = Interval, self
-        return I(-x_, -_x)
+        IA, [_x, x_] = Interval, self
+        return IA(-x_, -_x)
 
     def __add__(self, other):
-        I, s, o = Interval, self, _ensure_interval(other)
-        return I(*_add(s._x, s.x_, o._x, o.x_))
+        IA, s, o = Interval, self, _ensure_IA(other)
+        return IA(*_add(s._x, s.x_, o._x, o.x_))
 
     def __radd__(self, other):
         return self + other
 
     def __sub__(self, other):
-        I, [_s, s_], [_o, o_] = Interval, self, _ensure_interval(other)
-        return I(*_sub(_s, s_, _o, o_))
+        IA, [_s, s_], [_o, o_] = Interval, self, _ensure_IA(other)
+        return IA(*_sub(_s, s_, _o, o_))
 
     def __rsub__(self, other):
         return (-self) + other
 
     def __mul__(self, other):
-        I, [_s, s_], [_o, o_] = Interval, self, _ensure_interval(other)
-        return I(*_mul(_s, s_, _o, o_))
+        IA, [_s, s_], [_o, o_] = Interval, self, _ensure_IA(other)
+        return IA(*_mul(_s, s_, _o, o_))
 
     def __rmul__(self, other):
         return self * other
 
     def __truediv__(self, other):
-        I, [_s, s_], [_o, o_] = Interval, self, _ensure_interval(other)
-        return I(*_div(_s, s_, _o, o_))
+        IA, [_s, s_], [_o, o_] = Interval, self, _ensure_IA(other)
+        return IA(*_div(_s, s_, _o, o_))
 
     def __rtruediv__(self, other):
-        s, o = self, _ensure_interval(other)
+        s, o = self, _ensure_IA(other)
         return o / s
 
     def __le__(self, other):
-        [_s, s_], [_o, o_] = self, _ensure_interval(other)
+        [_s, s_], [_o, o_] = self, _ensure_IA(other)
         return (_s <= _o) and (s_ <= o_)
 
     def __lt__(self, other):
-        [_s, s_], [_o, o_] = self, _ensure_interval(other)
+        [_s, s_], [_o, o_] = self, _ensure_IA(other)
         return (_s < _o) and (s_ < o_)
 
     def __ge__(self, other):
-        [_s, s_], [_o, o_] = self, _ensure_interval(other)
+        [_s, s_], [_o, o_] = self, _ensure_IA(other)
         return (_s >= _o) and (s_ >= o_)
 
     def __gt__(self, other):
-        [_s, s_], [_o, o_] = self, _ensure_interval(other)
+        [_s, s_], [_o, o_] = self, _ensure_IA(other)
         return (_s > _o) and (s_ > o_)
 
     def __abs__(self):
@@ -669,9 +669,9 @@ class Interval:
 ########################################################################################
 
 
-def _ensure_interval(other) -> Interval:
+def _ensure_IA(other) -> Interval:
     """Ensure other is an Interval."""
-    I, o = Interval, other
-    if not isinstance(o, I):
-        o = I(o)
+    IA, o = Interval, other
+    if not isinstance(o, IA):
+        o = IA(o)
     return o
