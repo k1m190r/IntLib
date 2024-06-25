@@ -6,3 +6,4 @@ simpy
 scipy
 bokeh
 numba
+pytest
